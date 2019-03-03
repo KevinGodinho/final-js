@@ -7,46 +7,82 @@
     
     <body>
         <h1>Menu</h1>
-        <label>Pizza:</label>
-        <select id="slices">
-            <option value="1">1 Slice</option>
-            <option value="2">2 Slice</option>
-            <option value="3">3 Slice</option>
-            <option value="4">4 Slice</option>
-        </select>
+        <label>How many pizza slices?</label>
+        <input type="number" id="slices" name="pizzaslices" min="1"><br>
+        <span id="pizza"></span>
         <br>
         <br>
         
         <div>Toppings:</div>
-        <input type="checkbox" name="pepperoni" value=".20"><label for="pepperoni">Pepperoni .25&#162;</label><br>
-        <input type="checkbox" name="meatballs" value=".35"><label for="meatballs">Meatballs .35&#162;</label><br>
-        <input type="checkbox" name="mushrooms" value=".40"><label for="mushrooms">Mushrooms .40&#162;</label><br>
-        <input type="checkbox" name="olives" value=".20"><label for="olives">Olives .20&#162;</label>
+        <input type="checkbox" name="pepperoni" value=".20" class="toppings"><label for="pepperoni">Pepperoni<span id="pepperoni"></span>&#162;</label><br>
+        <input type="checkbox" name="meatballs" value=".35" class="toppings"><label for="meatballs">Meatballs<span id="meatballs"></span>&#162;</label><br>
+        <input type="checkbox" name="mushrooms" value=".40" class="toppings"><label for="mushrooms">Mushrooms<span id="mushrooms"></span>&#162;</label><br>
+        <input type="checkbox" name="olives" value=".20" class="toppings"><label for="olives">Olives <span id="olives"></span>&#162;</label>
         <br>
         <br>
 
         <div>Sides:</div>
-        <input type="checkbox" name="potatosalad" value="1.25"><label for="potatosalad">Potato Salad $1.25</label><br>
-        <input type="checkbox" name="hummus" value=".35"><label for="hummus">Hummus $2.50</label><br>
-        <input type="checkbox" name="caesarsalad" value="3.50"><label for="caesarsalad">Caesar Salad $3.50</label><br>
-        <input type="checkbox" name="gardensalad" value="2.25"><label for="gardensalad">Garden Salad $2.25</label>
+        <input type="checkbox" name="potatosalad" value="1.25"><label for="potatosalad">Potato Salad<span id="potatosalad"></span></label><br>
+        <input type="checkbox" name="hummus" value="2.50"><label for="hummus">Hummus<span id="hummus"></span></label><br>
+        <input type="checkbox" name="caesarsalad" value="3.50"><label for="caesarsalad">Caesar Salad<span id="caesarsalad"></span></label><br>
+        <input type="checkbox" name="gardensalad" value="2.25"><label for="gardensalad">Garden Salad<span id="gardensalad"></span></label>
         <br>
         <br>
         
         <div>Drinks:</div>
-        <input type="radio" name="drinks" value="1.95"><label for="potatosalad">Small Soda $1.95</label><br>
-        <input type="radio" name="drinks" value="2.20"><label for="hummus">Medium Soda $2.20</label><br>
-        <input type="radio" name="drinks" value="2.50"><label for="caesarsalad">Large Soda $2.50</label><br>
-        <input type="radio" name="drinks" value="2.00"><label for="gardensalad">Juice $2.00</label><br>
-        <input type="radio" name="drinks" value="1.25"><label for="gardensalad">Water $1.25</label>
+        <input type="radio" name="drinks" value="1.95"><label for="small">Small Soda<span id="small"></span></label><br>
+        <input type="radio" name="drinks" value="2.20"><label for="medium">Medium Soda<span id="medium"></span></label><br>
+        <input type="radio" name="drinks" value="2.50"><label for="large">Large Soda<span id="large"></span></label><br>
+        <input type="radio" name="drinks" value="2.00"><label for="juice">Juice<span id="juice"></span></label><br>
+        <input type="radio" name="drinks" value="1.25"><label for="water">Water<span id="water"></span></label>
         <br>
         <br>
         
         
         <button onclick="yourOrder()">Your Order</button>
+        
         <script>
             
+            var pizzaInfo;
             
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'menu.json', true);
+            xhr.responseType = 'text';
+            
+            xhr.onload = function(){
+                if(xhr.status == 200){
+                   pizzaInfo = JSON.parse(xhr.responseText);
+                    console.log(pizzaInfo);
+                    
+                    //populate pizza price
+                    document.getElementById('pizza').innerHTML = ' $' + pizzaInfo.menu["slice of pizza"] + ' per slice';
+                    
+                    // populate prices of toppings
+                    document.getElementById('pepperoni').innerHTML = ' ' + pizzaInfo.menu.toppings.pepperoni;
+                    document.getElementById('meatballs').innerHTML = ' ' + pizzaInfo.menu.toppings.meatballs; document.getElementById('mushrooms').innerHTML = ' ' + pizzaInfo.menu.toppings.mushrooms; document.getElementById('olives').innerHTML = ' ' + pizzaInfo.menu.toppings.olives;
+                    
+                    //populate prices of sides
+                    document.getElementById('potatosalad').innerHTML = ' $' + pizzaInfo.menu.sides["potato salad"];
+                    document.getElementById('hummus').innerHTML = ' $' + pizzaInfo.menu.sides["hummus"];
+                    document.getElementById('caesarsalad').innerHTML = ' $' + pizzaInfo.menu.sides["caesar salad"];
+                    document.getElementById('gardensalad').innerHTML = ' $' + pizzaInfo.menu.sides["garden salad"];
+                    
+                    //populate prices of drinks
+                    document.getElementById('small').innerHTML = ' $' + pizzaInfo.menu.drinks.soda.small;
+                    document.getElementById('medium').innerHTML = ' $' + pizzaInfo.menu.drinks.soda.medium;
+                    document.getElementById('large').innerHTML = ' $' + pizzaInfo.menu.drinks.soda.large;
+                    document.getElementById('juice').innerHTML = ' $' + pizzaInfo.menu.drinks.juice;
+                    document.getElementById('water').innerHTML = ' $' + pizzaInfo.menu.drinks.water;
+                   
+                }
+            }
+            
+            xhr.send();
+            
+            function yourOrder(){
+                localStorage.setItem('toppings', document.getElementsByClassName('toppings').value);
+//                localStorage.setItem('Name','Kevin');
+            }
             
         </script>
     </body>
