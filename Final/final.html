@@ -40,6 +40,10 @@
         
         
         <button onclick="yourOrder()">Your Order</button>
+        <br>
+        <br>
+        
+        <div id="yourorder"></div>
         
         <script>
             
@@ -49,10 +53,11 @@
             xhr.open('GET', 'menu.json', true);
             xhr.responseType = 'text';
             
+            
+            //populate JSON menu data
             xhr.onload = function(){
                 if(xhr.status == 200){
                    pizzaInfo = JSON.parse(xhr.responseText);
-//                    console.log(pizzaInfo);
                     
                     //populate pizza price
                     document.getElementById('pizza').innerHTML = ' $' + pizzaInfo.menu["slice of pizza"] + ' per slice';
@@ -79,6 +84,8 @@
             
             xhr.send();
             
+            
+            //submit order 
             function yourOrder(){
                 
                 var pizzaSlices = document.getElementById('slices').value;
@@ -109,6 +116,8 @@
                     }
                 }
                 
+                
+                
                 //object to store as JASON in local storage
                 orderObj = {
                     slices: pizzaSlices,
@@ -120,6 +129,29 @@
                 var orderObj_serialized = JSON.stringify(orderObj);
                 
                 localStorage.setItem("orderObj", orderObj_serialized);
+                
+                
+                
+                //get order from local storage and display for user
+                var displayObj = JSON.parse(localStorage.getItem("orderObj"));
+                
+                var orderslices = displayObj.slices;
+                var ordertoppings = '';
+                var ordersides = '';
+                var orderdrink = displayObj.drink;
+                                
+                //loop through toppings to display 
+                for (var i = 0; i < displayObj.toppings.length; i++){
+                    ordertoppings += '<ul><li>'+displayObj.toppings[i]+'</li></ul>';
+                }
+                
+                //loop through sides to display 
+                for (var i = 0; i < displayObj.sides.length; i++){
+                    ordersides += '<ul><li>'+displayObj.sides[i]+'</li></ul>';
+                }
+                
+                //display order
+                document.getElementById('yourorder').innerHTML = '<h2>Your Order</h2>' + '<div><b>Number of slices:</b> '+orderslices+'</div><br>' + '<div><b>Toppings</b></div>'+ordertoppings+'<br>' + '<div><b>Sides</b></div>'+ordersides+'<br>' + '<div><b>Drink:</b> '+orderdrink+'</div><br>';
             }
             
         </script>
